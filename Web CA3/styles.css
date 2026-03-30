@@ -14,7 +14,6 @@
   --shadow:     0 4px 24px rgba(0,0,0,0.35);
 }
  
-/* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
  
 body {
@@ -24,7 +23,6 @@ body {
   min-height: 100vh;
 }
  
-/* ── Navbar ── */
 .navbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -82,14 +80,13 @@ body {
   color: var(--accent);
 }
  
-/* ── Page content ── */
+
 .page-content {
   max-width: 780px;
   margin: 48px auto 80px;
   padding: 0 24px;
 }
- 
-/* ── Table ── */
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -143,7 +140,6 @@ td[colspan] {
   padding: 40px 20px;
 }
  
-/* ── Form ── */
 #song-form {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -185,7 +181,6 @@ input:focus {
  
 input::placeholder { color: #3a4560; }
  
-/* ── Button ── */
 button[type="submit"] {
   font-family: 'Fira Code', monospace;
   font-size: 0.85rem;
@@ -210,7 +205,6 @@ button[type="submit"]:disabled {
   cursor: not-allowed;
 }
  
-/* ── Alerts ── */
 #msg { margin-bottom: 20px; }
  
 .alert {
@@ -232,7 +226,6 @@ button[type="submit"]:disabled {
   border: 1px solid rgba(248,113,113,0.2);
 }
  
-/* ── Responsive ── */
 @media (max-width: 560px) {
   .navbar { padding: 0 16px; }
   .page-content { padding: 0 16px; margin-top: 28px; }
