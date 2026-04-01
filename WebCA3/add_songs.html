@@ -1,0 +1,108 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Add Songs</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <span class="nav-brand">Songs</span>
+    <div class="nav-links">
+      <a href="index.html">All Songs</a>
+      <a href="add_songs.html" class="active">Add Songs</a>
+    </div>
+  </nav>
+  
+<div id="msg" role="status" aria-live="polite" style="margin:12px 0;"></div>
+
+  <form id="song-form">
+    <label>
+      Title
+      <input name="title" required />
+    </label><br/>
+
+    <label>
+      Artist
+      <input name="artist" />
+    </label><br/>
+
+    <label>
+      Genre
+      <input name="genre" />
+    </label><br/>
+
+    <label>
+      Release Year
+      <input name="release_year" type="number" inputmode="numeric" />
+    </label><br/>
+
+    <button type="submit">Save</button>
+  </form>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="config.js"></script>
+
+ 
+  
+
+<script>
+
+  const client = window.supabase.createClient(
+    window.SUPABASE_URL,
+    window.SUPABASE_ANON_KEY
+  );
+
+  const form = document.getElementById('song-form');
+  const msg  = document.getElementById('msg'); 
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    const fd = new FormData(form);
+    const payload = {
+      title: (fd.get('title') || '').trim(),
+      artist: (fd.get('artist') || '').trim() || null,
+      genre: (fd.get('genre') || '').trim() || null,
+      release_year: fd.get('release_year') ? Number(fd.get('release_year')) : null
+    };
+
+    if (!payload.title) {
+      alert('Title is required');
+      btn.disabled = false; btn.textContent = 'Save';
+      return;
+    }
+
+    const { data, error } = await client.from('songs').insert(payload).select().single();
+
+    btn.disabled = false;
+    btn.textContent = 'Save';
+
+    if (error) {
+  
+      msg.innerHTML = `<div class="alert error">Insert failed: ${error.message}</div>`;
+      console.error(error);
+      return;
+    }
+
+    form.reset();
+
+    form.querySelector('[name="title"]').focus();
+    
+    msg.innerHTML = `<div class="alert success"> “${data.title}” was added successfully.
+      
+    </div>`;
+  });
+</script>
+
+
+</body>
+</html>
