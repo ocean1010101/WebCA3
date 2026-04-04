@@ -226,11 +226,3 @@ button[type="submit"]:disabled {
   border: 1px solid rgba(248,113,113,0.2);
 }
  
-@media (max-width: 560px) {
-  .navbar { padding: 0 16px; }
-  .page-content { padding: 0 16px; margin-top: 28px; }
-  #song-form { padding: 24px 20px; }
-  th, td { padding: 12px 14px; }
-  th:nth-child(3), td:nth-child(3),
-  th:nth-child(4), td:nth-child(4) { display: none; }
-}
