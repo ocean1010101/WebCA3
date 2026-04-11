@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Songs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="nav-left"></div>
+    <span class="nav-brand">Songs</span>
+    <div class="nav-links">
+      <a href="index.html" class="active">All Songs</a>
+      <a href="add_songs.html">Add Songs</a>
+      <a href="edit_songs.html">Edit Songs</a>
+      <a href="delete_songs.html">Delete Songs</a>
+      <a href="search_songs.html">Search Songs</a>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Artist</th>
+          <th>Genre</th>
+          <th>Year</th>
+        </tr>
+      </thead>
+      <tbody id="songs-table">
+        <tr>
+          <td colspan="4">Loading…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js?v=4"></script>
+  <script>
+    const client = window.supabase.createClient(
+      window.SUPABASE_URL,
+      window.SUPABASE_ANON_KEY
+    );
+    async function loadSongs() {
+      const tbody = document.getElementById('songs-table');
+      const { data, error } = await client
+        .from('songs')
+        .select('*')
+        .order('id', { ascending: true });
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="4" style="color:#f87171">Error: ${error.message}</td></tr>`;
+        return;
+      }
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">(no songs yet)</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = data.map(s => `
+        <tr>
+          <td>${s.title}</td>
+          <td>${s.artist || ''}</td>
+          <td>${s.genre || ''}</td>
+          <td>${s.release_year ?? ''}</td>
+        </tr>
+      `).join('');
+    }
+    window.addEventListener('DOMContentLoaded', loadSongs);
+  </script>
+</body>
+
+</html>
