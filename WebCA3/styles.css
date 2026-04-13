@@ -162,7 +162,8 @@ label {
   color: var(--muted);
 }
  
-input {
+input,
+select {
   font-family: 'Fira Code', monospace;
   font-size: 1rem;
   color: var(--text);
@@ -173,7 +174,20 @@ input {
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
- 
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(123,147,212,0.15);
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
 input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(123,147,212,0.15);

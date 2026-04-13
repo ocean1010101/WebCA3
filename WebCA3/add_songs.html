@@ -9,7 +9,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <span class="nav-brand">Songs</span>
+    <span class="nav-brand">Add Songs</span>
     <div class="nav-links">
       <a href="index.html">All Songs</a>
       <a href="add_songs.html" class="active">Add Songs</a>
@@ -34,6 +34,14 @@
       <input name="genre" />
     </label><br/>
 
+
+    <label>
+      Album
+      <select name="album_id" id="album-select"></select>
+    </label>
+
+
+
     <label>
       Release Year
       <input name="release_year" type="number" inputmode="numeric" />
@@ -57,6 +65,31 @@
     window.SUPABASE_ANON_KEY
   );
 
+async function loadAlbums() {
+  const select = document.getElementById('album-select');
+
+  const { data, error } = await client
+    .from('albums')
+    .select('id, title')
+    .order('title');
+
+  if (error) {
+    console.error('Error loading albums:', error);
+    return;
+  }
+
+  data.forEach(album => {
+    const option = document.createElement('option');
+    option.value = album.id;
+    option.textContent = album.title;
+    select.appendChild(option);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', loadAlbums);
+
+  
+
   const form = document.getElementById('song-form');
   const msg  = document.getElementById('msg'); 
 
@@ -72,6 +105,7 @@
       title: (fd.get('title') || '').trim(),
       artist: (fd.get('artist') || '').trim() || null,
       genre: (fd.get('genre') || '').trim() || null,
+      album_id: fd.get('album_id') || null,
       release_year: fd.get('release_year') ? Number(fd.get('release_year')) : null
     };
 

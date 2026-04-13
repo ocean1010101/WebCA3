@@ -21,7 +21,11 @@
     <table>
       <thead>
         <tr>
-          <th>Title</th><th>Artist</th><th>Genre</th><th>Year</th>
+          <th>Title</th>
+          <th>Artist</th>
+          <th>Genre</th>
+          <th>Album</th>
+          <th>Year</th>
         </tr>
       </thead>
       <tbody id="songs-table">
@@ -39,10 +43,20 @@
     );
     async function loadSongs() {
       const tbody = document.getElementById('songs-table');
-      const { data, error } = await client
-        .from('songs')
-        .select('*')
-        .order('id', { ascending: true });
+      
+const { data, error } = await client
+    .from('songs')
+    .select(`
+      title,
+      artist,
+      genre,
+      release_year,
+      albums (
+        title
+      )
+    `)
+    .order('id', { ascending: true });
+
       if (error) {
         tbody.innerHTML = `<tr><td colspan="4" style="color:#f87171">Error: ${error.message}</td></tr>`;
         return;
@@ -56,6 +70,7 @@
           <td>${s.title}</td>
           <td>${s.artist || ''}</td>
           <td>${s.genre || ''}</td>
+          <td>${s.albums?.title || '—'}</td>
           <td>${s.release_year ?? ''}</td>
         </tr>
       `).join('');
