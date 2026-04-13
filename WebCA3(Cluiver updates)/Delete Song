@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Songs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <span class="nav-brand">Songs</span>
+        <div class="nav-links">
+            <a href="index.html">All Songs</a>
+            <a href="add_songs.html" class="active">Add Songs</a>
+            <a href="edit_songs.html">Edit Songs</a>
+            <a href="delete_songs.html">Delete Songs</a>
+            <a href="search_songs.html">Search Songs</a>
+        </div>
+    </nav>
+
+    <h1>Delete Songs</h1>
+
+    <p>Click delete to remove a song from the database</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Year</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="songTable"></tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+
+    <script>
+        const client = supabase.createClient(
+            window.SUPABASE_URL,
+            window.SUPABASE_ANON_KEY
+        );
+
+        async function loadSongs() {
+            const { data, error } = await client
+                .from('songs')
+                .select('*');
+
+            const table = document.getElementById("songTable");
+            table.innerHTML = "";
+
+            if (error) {
+                alert("Error loading songs");
+                return;
+            }
+
+            data.forEach(song => {
+                table.innerHTML += `
+          <tr>
+            <td>${song.title}</td>
+            <td>${song.artist}</td>
+            <td>${song.genre || ''}</td>
+            <td>${song.release_year || ''}</td>
+            <td>
+              <button onclick="deleteSong(${song.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+            });
+        }
+
+        loadSongs();
+
+        async function deleteSong(id) {
+            const confirmDelete = confirm("Are you sure you want to delete this song?");
+
+            if (!confirmDelete) return;
+
+            const { error } = await client
+                .from('songs')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert("Error deleting song");
+            } else {
+                alert("Song deleted successfully!");
+                loadSongs();
+            }
+        }
+    </script>
+</body>
+
+</html>
