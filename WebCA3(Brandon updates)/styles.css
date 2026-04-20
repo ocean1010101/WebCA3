@@ -359,3 +359,12 @@ small,
   padding: 14px 16px;
   border-radius: 14px;
 }
+
+tr:hover {
+  background-color: #132947;
+  transform: scale(1.01);
+}
+
+button:hover {
+  box-shadow: 0 0 12px #ff2c74;
+}
