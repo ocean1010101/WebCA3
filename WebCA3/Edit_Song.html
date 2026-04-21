@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Songs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <span class="nav-brand">Songs</span>
+        <div class="nav-links">
+            <a href="Index.html">All Songs</a>
+            <a href="Add_Songs.html" class="active">Add Songs</a>
+            <a href="Edit_Song.html">Edit Songs</a>
+            <a href="Delete_Song.html">Delete Songs</a>
+            <a href="Search_Songs.html">Search Songs</a>
+        </div>
+    </nav>
+
+    <h1>Edit Songs</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Year</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="songTable"></tbody>
+    </table>
+
+    <h2>Edit Song</h2>
+
+    <form id="editForm">
+        <input type="hidden" id="songId">
+
+        <label>Title</label>
+        <input type="text" id="title" required>
+
+        <label>Artist</label>
+        <input type="text" id="artist">
+
+        <label>Genre</label>
+        <input type="text" id="genre">
+
+        <label>Release Year</label>
+        <input type="number" id="release_year">
+
+        <button type="submit">Update Song</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+
+    <script>
+        const client = supabase.createClient(
+            window.SUPABASE_URL,
+            window.SUPABASE_ANON_KEY
+        );
+
+        async function loadSongs() {
+            const { data, error } = await client
+                .from('songs')
+                .select('*');
+
+            const table = document.getElementById("songTable");
+            table.innerHTML = "";
+
+            if (error) {
+                alert("Error loading songs");
+                return;
+            }
+
+            data.forEach(song => {
+                table.innerHTML += `
+          <tr>
+            <td>${song.title}</td>
+            <td>${song.artist}</td>
+            <td>${song.genre || ''}</td>
+            <td>${song.release_year || ''}</td>
+            <td>
+              <button onclick="editSong(${song.id}, '${song.title}', '${song.artist}', '${song.genre}', '${song.release_year}')">
+                Edit
+              </button>
+            </td>
+          </tr>
+        `;
+            });
+        }
+
+        loadSongs();
+
+        function editSong(id, title, artist, genre, year) {
+            document.getElementById("songId").value = id;
+            document.getElementById("title").value = title;
+            document.getElementById("artist").value = artist;
+            document.getElementById("genre").value = genre || '';
+            document.getElementById("release_year").value = year || '';
+        }
+
+        document.getElementById("editForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById("songId").value;
+
+            if (!id) {
+                alert("Please select a song to edit first");
+                return;
+            }
+
+            const updatedSong = {
+                title: document.getElementById("title").value,
+                artist: document.getElementById("artist").value,
+                genre: document.getElementById("genre").value,
+                release_year: document.getElementById("release_year").value
+            };
+
+            const { error } = await client
+                .from('songs')
+                .update(updatedSong)
+                .eq('id', id);
+
+            if (error) {
+                alert("Error updating song");
+            } else {
+                alert("Song updated successfully!");
+                document.getElementById("editForm").reset();
+                loadSongs();
+            }
+        });
+
+    </script>
+</body>
+
+</html>

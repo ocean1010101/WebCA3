@@ -13,6 +13,9 @@
     <div class="nav-links">
       <a href="index.html">All Songs</a>
       <a href="add_songs.html" class="active">Add Songs</a>
+      <a href="Edit_Song.html">Edit Songs</a>
+      <a href="Delete_Song.html">Delete Songs</a>
+      <a href="Search_Songs.html">Search Songs</a>
     </div>
   </nav>
   
@@ -40,8 +43,6 @@
       <select name="album_id" id="album-select"></select>
     </label>
 
-
-
     <label>
       Release Year
       <input name="release_year" type="number" inputmode="numeric" />
@@ -54,9 +55,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script src="config.js"></script>
-
- 
-  
 
 <script>
 
@@ -87,8 +85,6 @@ async function loadAlbums() {
 }
 
 window.addEventListener('DOMContentLoaded', loadAlbums);
-
-  
 
   const form = document.getElementById('song-form');
   const msg  = document.getElementById('msg'); 

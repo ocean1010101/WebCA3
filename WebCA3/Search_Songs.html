@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Songs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <span class="nav-brand">Songs</span>
+        <div class="nav-links">
+            <a href="Index.html">All Songs</a>
+            <a href="Add_Songs.html" class="active">Add Songs</a>
+            <a href="Edit_Song.html">Edit Songs</a>
+            <a href="Delete_Song.html">Delete Songs</a>
+            <a href="Search_Songs.html">Search Songs</a>
+        </div>
+    </nav>
+    <h1>Search Songs</h1>
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search songs...">
+        <button type="submit">Search</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody id="searchResults"></tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+
+    <script>
+        const client = supabase.createClient(
+            window.SUPABASE_URL,
+            window.SUPABASE_ANON_KEY
+        );
+
+        document.getElementById("searchForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const searchTerm = document.getElementById("searchInput").value;
+
+            const { data, error } = await client
+                .from('songs')
+                .select('*')
+                .ilike('title', `%${searchTerm}%`);
+
+            if (error) {
+                alert("Error searching songs");
+                return;
+            }
+
+            const table = document.getElementById("searchResults");
+            table.innerHTML = "";
+
+            data.forEach(song => {
+                table.innerHTML += `
+          <tr>
+            <td>${song.title}</td>
+            <td>${song.artist}</td>
+            <td>${song.genre || ''}</td>
+            <td>${song.release_year || ''}</td>
+          </tr>
+        `;
+            });
+        });
+    </script>
+</body>
+
+</html>
