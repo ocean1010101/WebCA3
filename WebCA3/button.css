@@ -258,6 +258,10 @@ button {
         opacity 0.2s ease;
 }
 
+button a{
+    color: #fff;
+}
+
 button:hover,
 .btn:hover {
   transform: translateY(-2px);
